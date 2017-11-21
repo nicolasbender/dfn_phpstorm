@@ -1,0 +1,71 @@
+[Package]
+version: 1.1b
+depends: 
+incremental: False
+
+[Product]
+type: localboot
+id: dfn_intellij
+name: IntelliJ
+description: 
+advice: 
+version: 2017.2.5
+priority: 0
+licenseRequired: False
+productClasses: 
+setupScript: setup3264.opsiscript
+uninstallScript: uninstall3264.opsiscript
+updateScript: 
+alwaysScript: 
+onceScript: 
+customScript: 
+userLoginScript: 
+
+[ProductProperty]
+type: unicode
+name: intellij_version
+multivalue: False
+editable: False
+description: Auswahl der IntelliJ-Versionen
+values: ["Community", "Ultimate"]
+default: ["Community"]
+
+[ProductProperty]
+type: unicode
+name: architecture
+multivalue: False
+editable: False
+description: Defines wether to run the version of 64bit, 32bit or automatic
+values: ["32bit", "64bit", "auto"]
+default: ["auto"]
+
+[ProductProperty]
+type: bool
+name: desktop-link
+description: Link on Desktop?
+default: False
+
+[ProductProperty]
+type: unicode
+name: custom-post-install
+multivalue: False
+editable: False
+description: Define filename for include script in custom directory after installation
+values: ["none", "post-install.opsiinc"]
+default: ["none"]
+
+[ProductProperty]
+type: unicode
+name: custom-post-deinstall
+multivalue: False
+editable: False
+description: Define filename for include script in custom directory after deinstallation
+values: ["none", "post-deinstall.opsiinc"]
+default: ["none"]
+
+[Changelog]
+dfn_intellij (2017.2.1-1.0) stable; urgency=low
+
+Paket erstellt
+
+ -- Nicolas Bender <nicolas.bender@kit.edu>  Fri, 25 Aug 2017 15:49:29 +0000

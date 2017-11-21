@@ -1,0 +1,73 @@
+; Copyright (c) uib gmbh (www.uib.de)
+; This sourcecode is owned by uib
+; and published under the Terms of the General Public License.
+; credits: http://www.opsi.org/en/credits/
+ 
+[Actions]
+requiredWinstVersion >= "4.11.5.0"
+
+include_insert "common.opsiinc"
+
+if not(HasMinimumSpace ("%SystemDrive%", $MinimumSpace$))
+	LogError "Not enough space on %SystemDrive%, " + $MinimumSpace$ + " on drive %SystemDrive% needed for " + $ProductId$
+	isFatalError
+	; Status auf Failed, wenn nicht genug Speicherplatz auf dem Datentraeger frei ist
+	else
+	
+	Message "Installing " +$ProductName$+ "..."
+
+	; deinstallieren, falls Software bereits installiert ist
+	if FileExists("%ScriptPath%\delsub3264.opsiscript")
+		comment "Start uninstall sub section"
+		Sub "%ScriptPath%\delsub3264.opsiscript"
+	endif
+	
+	; starte Installation der gewaehlten Version
+	comment "Start setup program"
+	Winbatch_install
+	
+	; Eintrag Startmenu
+	comment "creating startmenu entry"
+	Linkfolder_create_startmenu
+	
+	; erstelle Desktopicon falls erwuenscht
+	if $DesktopLink$ = "True"
+		LinkFolder_create
+	endif
+	
+	; Custom Post Install File
+	comment "include custom post install file"
+	if not ($CustomPostInstall$ = "none")
+		if FileExists("%ScriptPath%\custom\" + $CustomPostInstall$)
+			include_insert "%ScriptPath%\custom\" + $CustomPostInstall$
+		endif
+	endif
+	
+endif
+
+[Winbatch_install]
+"%ScriptPath%\$InstFile$" /S /D="$InstallDir$"
+
+[Linkfolder_create]
+set_basefolder common_desktopdirectory
+set_subfolder ""
+set_link
+    name: $FullName$
+    target: $PathToExe$
+    parameters:
+    working_dir:
+    icon_file:
+    icon_index:
+end_link
+
+[Linkfolder_create_startmenu]
+set_basefolder common_programs
+set_subfolder "JetBrains"
+set_link
+    name: $FullName$
+    target: $PathToExe$
+    parameters:
+    working_dir:
+    icon_file:
+    icon_index:
+end_link

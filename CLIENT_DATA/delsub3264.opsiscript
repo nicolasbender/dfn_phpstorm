@@ -1,0 +1,49 @@
+; Copyright (c) uib gmbh (www.uib.de)
+; This sourcecode is owned by uib gmbh
+; and published under the Terms of the General Public License.
+; credits: http://www.opsi.org/en/credits/
+	
+; Pruefe, ob Pfad nicht leer ist
+if ($UNCPathUninstall$ = "")
+	comment "No uninstall.exe of " + $ProductName$ + " found in registry"
+else
+
+	; Deinstalliere Software
+	comment "uninstalling..."
+	Winbatch_uninstall
+	
+	; Verknuepfung auf dem Desktop wird geloescht
+	comment "Delete common desktop icon, if any"
+	if $DesktopLink$ = "True"
+        LinkFolder_delete
+	endif
+	
+	comment "Delete Startmenu Entries in Common Folder"
+	Linkfolder_delete_startmenu
+	DosInAnIcon_delete_jetbrains_folder
+	
+	; Custom Post Deinstall File
+	comment "include custom post deinstall file"
+	if not ($CustomPostDeinstall$ = "none")
+		if FileExists("%ScriptPath%\custom\" + $CustomPostDeinstall$)
+			include_insert "%ScriptPath%\custom\" + $CustomPostDeinstall$
+		endif
+	endif
+	
+endif
+
+[Winbatch_uninstall]
+"$UNCPathUninstall$" /S
+
+[LinkFolder_delete]
+set_basefolder common_desktopdirectory
+set_subfolder ""
+delete_element $ProductName$
+
+[DosInAnIcon_delete_jetbrains_folder]
+rmdir "%CommonProgramsDir%\JetBrains"
+
+[Linkfolder_delete_startmenu]
+set_basefolder common_programs
+set_subfolder "JetBrains"
+delete_element $FullName$
